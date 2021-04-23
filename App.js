@@ -1,32 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
+import 'react-native-gesture-handler';
+import {StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import HomeScreen from './src/screens/HomeScreens/index';
-import DestinationSearchScreen from "./src/screens/DestinationSearch/index";
-import SelectRide from './src/screens/SelectRide/index';
+import { StyleSheet, Text, View, Button } from 'react-native';
+import * as Permissions from 'expo-permissions';
+import {usePermissions} from 'expo-permissions'
+import Router from './src/navigation/root';
+import { withAuthenticator } from 'aws-amplify-react-native'
+import Amplify from "aws-amplify";
+import awsExports from "./src/aws-exports";
+Amplify.configure(awsExports);
 
 
-export default function App() {
+ function App() {
+
+  const [permission, askForPermission] = usePermissions(Permissions.LOCATION, { ask: true });
+
+  if (!permission || permission.status !== 'granted') {
+    return (
+      <View>
+        <Text>Permission is not granted</Text>
+        <Button title="Grant permission" onPress={askForPermission} />
+        </View>
+    )
+  } 
   return (
     <>
-    {/* <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
       <StatusBar style="auto" />
-      <Ionicons  name="md-checkmark-circle" size={32} color="green" />
-    </View> */}
-    {/* <HomeScreen /> */}
-    {/* <DestinationSearchScreen /> */}
-    <SelectRide />
+    <Router />
     </>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default withAuthenticator(App);
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#fff',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+// });

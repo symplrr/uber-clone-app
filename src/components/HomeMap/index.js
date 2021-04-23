@@ -4,7 +4,6 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import cars from '../../../assets/data/cars';
 
 const HomeMap = (props) => {
-
   const getImage = (type) => {
     if (type === 'UberX') {
       return require('../../../assets/images/top-UberX.png');
@@ -24,6 +23,7 @@ const HomeMap = (props) => {
         width: '100%',
       }}
       provider={PROVIDER_GOOGLE}
+      showsUserLocation={true}
       initialRegion={{
         latitude: 28.450627,
         longitude: -16.263045,
@@ -40,7 +40,16 @@ const HomeMap = (props) => {
           }}
         >
           <Image
-            style={{ width: 80, height: 80, resizeMode: 'contain' }}
+            style={{
+              width: 80,
+              height: 80,
+              resizeMode: 'contain',
+              transform: [
+                {
+                  rotate: `${car.heading}deg`,
+                },
+              ],
+            }}
             source={getImage(car.type)}
           />
         </Marker>
